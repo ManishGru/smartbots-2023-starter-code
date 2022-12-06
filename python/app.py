@@ -10,7 +10,7 @@ from bot import get_bid, get_trump_suit, get_play_card
 
 
 # to enable debug, run app with `DEBUG=1 python src/app.py`
-DEBUG = os.getenv("DEBUG", False)
+DEBUG = os.getenv("DEBUG", True)
 
 app = Sanic(__name__)
 CORS(app)
@@ -27,6 +27,7 @@ def print(args):
 
 @app.route("/hi", methods=["GET"])
 def hi(request: Request):
+    print(request)
     print("Hit the endpoint. Sending hello...")
     return json({"value": "hello"})
 
@@ -58,7 +59,7 @@ def bid(request: Request):
     """
     
     body = request.json
-    print(body)
+    # print(body)
     
     return json(get_bid(body))
 
@@ -84,7 +85,7 @@ def choose_trump(request: Request):
     """
     
     body = request.json
-    print(body)
+    # print(body)
     
     return json(get_trump_suit(body))
 
@@ -132,7 +133,7 @@ def play(request: Request):
     """
     
     body = request.json
-    print(body)
+    # print(body)
     
     return json(get_play_card(body))
 
@@ -140,4 +141,4 @@ def play(request: Request):
 
 if __name__ == "__main__":
     # Docker image should always listen in port 8001
-    app.run(host="0.0.0.0", port=8001, debug=DEBUG, access_log=DEBUG)
+    app.run(host="0.0.0.0", port=8005, debug=DEBUG, access_log=DEBUG, auto_reload= True)

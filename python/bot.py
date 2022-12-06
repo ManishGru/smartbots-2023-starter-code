@@ -1,5 +1,38 @@
 from utils import get_suit, get_suit_card
 
+suits = ["D", "S", "H", "C"]
+global ind
+ind = 0
+suit_log_called = False
+global length
+length = 0
+
+def suit_log(body):
+    suit_log_called = True
+    diamond = []
+    spade = []
+    heart = []
+    clubs = []
+    for card in body['cards']:
+        card_suit = get_suit(card)
+        if card_suit == "S":
+            spade.append(card)
+        elif card_suit == "H":
+            heart.append(card)
+        elif card_suit == "D":
+            diamond.append(card)
+        else:
+            clubs.append(card)
+    arr = [diamond, spade, heart, clubs]
+    global length
+    length = 0
+    for suit in arr:
+        le = len(suit);
+        if(le > length ):
+            length = le
+            global ind
+            ind = arr.index(suit)
+
 
 def get_bid(body):
     """
@@ -11,12 +44,23 @@ def get_bid(body):
     #     Input your code here.        #
     ####################################
     
-    MIN_BID = 16
+    MIN_BID =16
     PASS_BID = 0
-
+    if suit_log_called==False:
+        suit_log(body)
     # when you are the first player to bid, use the minimum bid
+    print(length)
     if len(body["bidHistory"]) == 0:
         return {"bid" : MIN_BID}
+    last_bid = body["bidHistory"][-1][-1]
+    if length == 1:
+        return {"bid": PASS_BID}
+    if length == 2 and last_bid<18:
+        last_bid += 1
+        return {"bid": last_bid }
+    if length == 2 and last_bid<19:
+        last_bid += 1
+        return {"bid": last_bid }
     
     return {"bid" : PASS_BID}
 
@@ -37,9 +81,7 @@ def get_trump_suit(body):
     ####################################
     
     last_card = body['cards'][-1]
-    last_card_suit = get_suit(last_card)
-    
-    return {"suit": last_card_suit}
+    return {"suit":suits[ind]}
 
 
 
